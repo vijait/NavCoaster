@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NAV</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <!--<link rel="shortcut icon" href="http://si.wsj.net/favicon.ico"/>
+    <link rel="apple-touch-icon" href="http://s.wsj.net/apple-touch-icon.png"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="canonical" href="http://graphics.wsj.com/3d-nasdaq/"/>
+    <meta property="og:url" content="http://graphics.wsj.com/3d-nasdaq/"/>
+
+    <link rel="image_src" href="http://graphics.wsj.com/3d-nasdaq/img/promo-facebook.jpg"/>
+    <meta property="og:image" content="http://graphics.wsj.com/3d-nasdaq/img/promo-facebook.jpg"/>
+    <meta name="twitter:image:src" content="http://graphics.wsj.com/3d-nasdaq/img/promo-twitter.jpg">
+
+    <meta name="title" content="Is the NASDAQ in Another Bubble? A virtual reality tour of the NASDAQ "/>
+    <meta property="og:title" content="Is the NASDAQ in Another Bubble? A virtual reality tour of the NASDAQ "/>
+    <meta name="twitter:title" content="Is the NASDAQ in Another Bubble? A virtual reality tour of the NASDAQ ">
+
+    <meta name="description" content="Explore 21 years of the NASDAQ through a 3D interactive chart showing major events and turning points."/>
+    <meta name="twitter:description" content="Explore 21 years of the NASDAQ through a 3D interactive chart showing major events and turning points.">
+
+    <meta name="keywords" content="nasdaq, stock, record, peak, dot-com bubble, stock, dow, dow nasdaq, dow jones, nyse, nasdaq index, 3D, virtual reality, google cardboard"/>
+    <meta name="news_keywords" content="nasdaq, stock, record, peak, dot-com bubble, dow, dow nasdaq, dow jones, nyse, nasdaq index, 3D, virtual reality, google cardboard">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <meta name="author" content="Roger Kenny, Ana Becker"/>
+    <meta name="twitter:domain" content="WSJ.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@wsj">
+    <meta property="og:site_name" content="WSJ"/>
+    <meta property="og:type" content="article"/>
+    <meta property="fb:app_id" content="368513495882"/>
+    <meta property="article:publisher" content="https://www.facebook.com/wsj"/>
+
+    <script type="text/javascript" src="http://online.wsj.com/public/resources/documents/WSJ_Interactive_TrackingAndAdsv6.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js"></script>
+    <link href="http://fonts.wsj.net/HCo_Whitney/font_HCo_Whitney.css" rel="stylesheet" type="text/css" />
+    <link href="http://fonts.wsj.net/HCo_Chronicle/font_HCo_Chronicle.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="http://graphics.wsj.com/libs/css/wsj/jquery.socialriser/1.4.0/jquery.socialriser.css"/>
+    <link rel="stylesheet" href="http://graphics.wsj.com/libs/css/bootstrap/3.3.2/bootstrap.min.css">
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">-->
+	
+	<script src="js/libs/modernizr.min.js"></script>
+    <link rel="stylesheet" href="css/style.css"/>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	
+    <style>
+      body {
+        margin: 0px;
+        overflow: hidden;
+        font-family: "Whitney SSm","Helvetica Neue",Helvetica,Arial,sans-serif;
+        color: #999999;
+        background-color: black;
+
+      }
+      body.mousehover {
+        cursor: pointer;
+      }
+      #example {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      .notstarted #example {
+        -webkit-filter: blur(5px);
+        -moz-filter: blur(5px);
+        -o-filter: blur(5px);
+        -ms-filter: blur(5px);
+        filter: blur(5px);
+      }
+      #vrui {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      #chartinfo {
+        position: absolute;
+        top: 35px;
+        right: 35px;
+        text-align: right;
+        min-width: 150px;
+        /*font-size: 25px;*/
+        /*line-height: 1.3em;*/
+      }
+      #startscreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        /*padding-top: 20%;*/
+      }
+      #minichart {
+        position: absolute;
+        top: 100px;
+        right: 35px;
+          box-shadow: inset 0px 0px 60px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.3);
+        /*height: 20px;
+        width: 50px;*/
+          border-bottom: 1px solid #555;
+  border-left: 1px solid #555;
+      }
+
+      .slide {
+        position: absolute;
+        top:0; left: 0; right: 0; bottom: 0;
+        background-color: #000f26;
+        opacity: 1.0;
+        min-height: 100%;
+        background-size: contain;
+        overflow: auto;
+        background-repeat: no-repeat;
+        background-position: center top;
+          /*padding-bottom: 50px;*/
+      }
+
+      .ahead {
+        opacity: 0.0;
+        display: none;
+      }
+
+      .current{
+        z-index: 5;
+        display: block;
+      }
+
+      .passed {
+        opacity: 0.0;
+        display: none;
+      }
+
+      /* ----------- iPhone 4 and 4S ----------- */
+
+/* Portrait and Landscape */
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 480px)
+{
+
+#chartinfo {
+  top:27px;
+  font-size: 12px;
+  right: 15px;
+}
+    
+}
+
+/* Portrait */
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 480px)
+  and (orientation: portrait) {
+
+}
+
+/* Landscape */
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 480px)
+  and (orientation: landscape) {
+
+    #startscreen {
+      /*padding-top: 5%;*/
+      font-size: 0.70em;
+    }
+
+    #startscreen p {
+      max-width: 80%;
+      margin-left: auto; margin-right: auto;
+    }
+
+
+
+}
+
+
+
+
+
+    </style>
+
+  </head>
+  <body class="notstarted">
+    <div class="top-header">
+    </div>
+    <div id="example"></div>
+    <div id="vrui">
+      <div id="chartinfo"></div>
+      <div id="minichart" ></div>
+    </div>
+    <div id="startscreen">
+      <div id="wrongbrowser" class="slide">
+        <h1>Wrong Browser</h1>
+      <div class="col-xs-12">
+        <div class="ohno">
+        <h3>Oh no! This interactive won't work in your browser</h3>
+        <p>Recommended desktop browsers are the latest versions of Chrome, Firefox, Safari and Internet Explorer</p><p>On iPhone and iPad you must have iOS 8+</p><p>On Android you must view in the Chrome browser</p>
+        </div>
+      </div>
+      </div>
+      <div class="slide current" ><div class="slideimg main"><h1>NAV Report</h1><p class="deck">A virtual reality guided tour </p>
+      <div class="col-xs-12">
+        <img src="img/loading.gif" alt="" class="loading-gif">
+      </div>
+      <button class="btn-ready pure-button btn begin-btn" onclick="start()" >Start</button>
+	          </div></div>
+      <div class="slide ahead" style="" >
+      <div class="slideimg" >
+        </div>
+      </div>
+      <div class="slide ahead" style="" >
+       <div class="slideimg" >
+       </div>
+      </div>
+      <div class="slide ahead" style="" >
+	  <div class="slideimg" >
+      </div>
+      </div>
+	</div>
+  <script src="js/jquery/jquery.js"></script>
+  <script src="js/libs/three.min.js"></script>
+  <script src="js/libs/StereoEffect.js"></script>
+  <script src="js/libs/DeviceOrientationControls.js"></script>
+  <script src="js/libs/OrbitControls.js"></script>
+  <script src="js/libs/VREffect.js"></script>
+  <script src="js/libs/VRControls.js"></script>
+  <script type="text/javascript" src="fonts/helvetiker_regular.typeface.js"></script>
+  <script type="text/javascript" src="fonts/droid_sans_regular.typeface.js"></script>
+  <script src="js/tween.js"></script>
+  <script src="js/d3.js"></script>
+  <script src="js/scene_coaster.js"></script>
+  <script type="text/javascript">
+      function webgl_detect(return_context){
+        if (!!window.WebGLRenderingContext) {
+            var canvas = document.createElement("canvas"),
+                 names = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
+               context = false;
+
+            for(var i=0;i<4;i++) {
+                try {
+                    context = canvas.getContext(names[i]);
+                    if (context && typeof context.getParameter == "function") {
+                        // WebGL is enabled
+                        if (return_context) {
+                            // return WebGL object if the function's argument is present
+                            return {name:names[i], gl:context};
+                        }
+                        // else, return just true
+                        console.log('webgl supported');
+                        $('#wrongbrowser').addClass('has-web-gl');
+                        return true;
+                    }
+                } catch(e) {}
+            }
+                             $('#wrongbrowser').addClass('no-web-gl');
+            // WebGL is supported, but disabled
+            return false;
+        }
+                             $('#wrongbrowser').addClass('no-web-gl');
+        // WebGL not supported
+        return false;
+    }
+
+    var navU = navigator.userAgent;
+
+    webgl_detect();
+
+
+// Native Android Browser
+  // Android Mobile
+  var isAndroidMobile = navU.indexOf('Android') > -1 && navU.indexOf('Mozilla/5.0') > -1 && navU.indexOf('AppleWebKit') > -1;
+
+  // Apple webkit
+  var regExAppleWebKit = new RegExp(/AppleWebKit\/([\d.]+)/);
+  var resultAppleWebKitRegEx = regExAppleWebKit.exec(navU);
+  var appleWebKitVersion = (resultAppleWebKitRegEx === null ? null : parseFloat(regExAppleWebKit.exec(navU)[1]));
+
+  // Chrome
+  var regExChrome = new RegExp(/Chrome\/([\d.]+)/);
+  var resultChromeRegEx = regExChrome.exec(navU);
+  var chromeVersion = (resultChromeRegEx === null ? null : parseFloat(regExChrome.exec(navU)[1]));
+
+  // Native Android Browser
+  var isAndroidBrowser = isAndroidMobile && (appleWebKitVersion !== null && appleWebKitVersion < 537) || (chromeVersion !== null && chromeVersion < 37);
+
+  if(isAndroidBrowser && !force){
+     $('#wrongbrowser').addClass('no-web-gl');
+     getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  }
+</script>
+ </body>
+</html>
